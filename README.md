@@ -89,8 +89,7 @@ note when they stop; the other two keep time and come back in on the beat. Pitch
 
 ## Installing
 
-The patched ROMs aren't in this repo because they're Stern's copyrighted code. Build them from your
-own `meteorb.zip`:
+The patched ROM zips are included. To rebuild them from your own `meteorb.zip`:
 
 ```
 python patch_meteor.py path\to\meteorb.zip .
