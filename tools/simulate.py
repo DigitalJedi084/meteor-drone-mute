@@ -5,7 +5,8 @@ Usage: python simulate.py <meteorb.zip> <out.wav> [seconds]
 
 The game itself isn't emulated. The harness reproduces only what touches the background sound:
   - bytecode op $55 calls $50B7 at game start
-  - the 120 Hz IRQ counts down $48 (score hold) and, every 4th tick, $5D; $5D hitting 0 runs $50ED
+  - the zero-cross IRQ (100 Hz in PinMAME) counts down $48 (score hold) and, every 4th tick, $5D;
+    $5D hitting 0 runs $50ED
   - scoring sets $48 = $FF (bursts of scoring, then quiet stretches)
   - sound effects: $6D set non-zero, an effect tone plays, then the STOP opcode resets the
     timers and calls $50CC (game in progress)
@@ -82,7 +83,7 @@ def run(zip_path, secs=90, wav=None):
     board = Board(); cpu = CPU(mem, on_write=board.write)
     mem[0x1F] = 0x80                      # game in progress
     cpu.call(0x50B7)                      # ball start (bytecode op $55)
-    tick = 1 / 120; t = 0.0; k = 0; effect_until = None; steps = 0
+    tick = 1 / 100; t = 0.0; k = 0; effect_until = None; steps = 0
     rng = np.random.default_rng(7)
     next_score = 0.5; next_effect = 6.0
     while t < secs:
@@ -102,7 +103,7 @@ def run(zip_path, secs=90, wav=None):
             mem[0x6D] = mem[0x6E] = 0
             cpu.call(0x50CC)              # STOP -> $50B2 -> $50CC (game in progress)
             effect_until = None
-        # 120 Hz timer service ($5D94)
+        # zero-cross timer service ($5D94)
         if mem[0x48]: mem[0x48] -= 1
         k += 1
         if k % 4 == 0 and mem[0x5D]:

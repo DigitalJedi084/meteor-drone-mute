@@ -12,10 +12,10 @@ NOTEP:   EQU $02F9          ; word: pointer into NOTES
 SCRIPT:  EQU $6D
 HOLD:    EQU $48
 STEPTMR: EQU $5D
-MAXLVL:  EQU 13
-K:       EQU 8
+MAXLVL:  EQU 10
+K:       EQU 10
 DECAY:   EQU 9000           ; T3: 16 envelope steps ~0.29 s
-GAP0:    EQU 22             ; ticks per note at level 0
+GAP0:    EQU 18             ; 25 Hz ticks per note at level 0 (0.72 s); level 10 = 0.32 s
 
          ORG $50B7
 start:   LDX #0

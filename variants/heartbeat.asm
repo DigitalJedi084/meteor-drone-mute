@@ -12,13 +12,13 @@ PHASE:   EQU $02F9          ; 0 = next is lub, 1 = next is dub
 SCRIPT:  EQU $6D
 HOLD:    EQU $48
 STEPTMR: EQU $5D
-MAXLVL:  EQU 20
+MAXLVL:  EQU 16
 K:       EQU 6
 LUB:     EQU 9090           ; 55 Hz
 DUB:     EQU 10203          ; 49 Hz
 DECAY:   EQU 5000           ; T3: 16 envelope steps ~0.16 s
-GAP:     EQU 7              ; ticks between lub and dub
-BEAT0:   EQU 36             ; ticks per beat at level 0 (50 bpm)
+GAP:     EQU 6              ; 25 Hz ticks between lub and dub
+BEAT0:   EQU 30             ; ticks per beat at level 0 (50 bpm); level 16 = 14 ticks (107 bpm)
 
          ORG $50B7
 start:   LDX #0
