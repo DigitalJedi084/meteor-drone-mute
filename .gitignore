@@ -1,0 +1,4 @@
+# Patched ROM sets contain Stern's copyrighted code - rebuild locally with patch_meteor.py
+*.zip
+*.716
+__pycache__/
