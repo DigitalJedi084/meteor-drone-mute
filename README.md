@@ -61,6 +61,32 @@ script (`$6D = 0`). With `$50CC` turned into RTS, nothing silences the 6840 afte
 start-game sweep is the obvious case, so it was removed. The clean patch silences the timers at that point
 instead, so no effect can get stuck and the start sound can stay.
 
+## Replacement background sounds (`variants/`)
+
+Each variant rewrites the drone block (`$50B7-$5152` in U2) with a gentler sound. The entry
+points stay the same, and one unused byte balances the boot checksum. None of them use timer 1 (the harsh pulse
+channel). All of them use the SB-300's timer 3 volume envelope, which PinMAME models as a 16-step
+fade driven by timer 3 (`$C0` bits: 0 up, 1 alternate, 2 continuous, 3 noise).
+
+| Variant | Sound | Gets more intense by |
+|---|---|---|
+| `breathing_bass` | Square bass swelling in and out, one note per breath: A–F–G–E | breaths go from 4 s to 2 s |
+| `heartbeat` | lub-dub thumps at 55/49 Hz with a fast decay | pulse goes from ~50 to ~110 bpm |
+| `invader_march` | four descending plucked notes G–F–E–D | notes go from 0.73 s to 0.3 s apart |
+
+Like the original, the intensity only climbs while you're scoring (`$48` hold), and it resets when `$50B7` runs at
+ball/game start. Sound effects take over the board while they play. Breathing bass restarts its
+note when they stop; the other two keep time and come back in on the beat. Pitches assume PinMAME's
+1 MHz 6840 clock, so they'd sound about 10% lower on a real machine.
+
+- `variants/*.asm` – source; `tools/build_variants.py <meteorb.zip> variants` assembles them into
+  `variants/<name>/meteorb.zip`.
+- `tools/simulate.py` runs a variant's actual ROM code in a 6800 emulator (`tools/emu6800.py`)
+  against simulated scoring and sound effects, and renders it through PinMAME's SB-300 model.
+  `previews/rom_*.wav` are those renders. The other previews are the idea sketches from `tools/sb300_preview.py`.
+- `install-variant.ps1 <name>` switches what VPinMAME loads (`breathing_bass`, `heartbeat`,
+  `invader_march`, `clean`, `forum`, `original`).
+
 ## Installing
 
 The patched ROMs aren't in this repo because they're Stern's copyrighted code. Build them from your
